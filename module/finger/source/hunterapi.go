@@ -10,6 +10,7 @@ import (
 	"io"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -101,13 +102,20 @@ func HunterAPI(searchkeyword string, searhtype string) (urls []string) {
 	fmt.Println("Hunter APIKEY为：" + huntercfg.Hunter.Apikey) //打印APIKEY
 
 	var keywords string
+	var searchkeyworddir string
 	switch searhtype {
 	case "domain":
 		keywords = `domain.suffix="` + searchkeyword + `"` //hunter查询域名的语法
+		searchkeyworddir = searchkeyword
 	case "ip":
 		keywords = `ip="` + searchkeyword + `"` //查询ip的语法
-		//预留未来备案号和备案单位的类型
+		StrContainers := strings.Contains(searchkeyword, "/24")
+		if StrContainers {
+			searchkeyworddir = strings.Replace(searchkeyword, "/24", "C", -1)
+		}
 
+
+		//预留未来备案号和备案单位的类型
 	}
 
 	b64query := base64.StdEncoding.EncodeToString([]byte(keywords))           //base64编码
@@ -130,7 +138,7 @@ func HunterAPI(searchkeyword string, searhtype string) (urls []string) {
 	//创建目录、创建标记文件
 	flagtext := "flag"
 	RealAssetsfile := "/flag.txt"
-	filepath := "./Result/" + searchkeyword
+	filepath := "./Result/" + searchkeyworddir
 	filepathfull := filepath + RealAssetsfile
 	if HunterResultS.Code == 200 {
 		CPath(filepath, filepathfull, flagtext)
@@ -183,7 +191,7 @@ func HunterAPI(searchkeyword string, searhtype string) (urls []string) {
 		}
 	}
 
-	fmt.Println("资产总数为：", HunterResultS.Data.Total, "\n", HunterResultS.Data.ConsumeQuota, "\n", HunterResultS.Data.RestQuota) //积分打印
+	fmt.Println("资产总数为：", HunterResultS.Data.Total, "\n", HunterResultS.Data.RestQuota) //积分打印
 
 	writer.Flush() // 此时才会将缓冲区数据写入
 

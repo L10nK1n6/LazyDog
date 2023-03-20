@@ -51,6 +51,10 @@ func outxlsx(kwpath string, filename string, msg []Outrestul) {
 }
 
 func outcsv(kwpath string, filename string, msg []Outrestul) {
+	StrContainers2 := strings.Contains(kwpath, "/24")
+	if StrContainers2 {
+		kwpath = strings.Replace(kwpath, "/24", "C", -1)
+	}
 	filepath := "./result/" + kwpath + "/"
 	f, err := os.Create(filepath + filename)
 	if err != nil {
