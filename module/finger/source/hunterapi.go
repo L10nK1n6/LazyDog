@@ -112,6 +112,8 @@ func HunterAPI(searchkeyword string, searhtype string) (urls []string) {
 		StrContainers := strings.Contains(searchkeyword, "/24")
 		if StrContainers {
 			searchkeyworddir = strings.Replace(searchkeyword, "/24", "C", -1)
+		}else {
+			searchkeyworddir = searchkeyword
 		}
 
 
